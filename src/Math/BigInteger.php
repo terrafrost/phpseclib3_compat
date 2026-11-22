@@ -59,7 +59,6 @@ use phpseclib4\Math\BigInteger\Engines\Engine;
  * @method BigInteger bitwise_rightRotate(int $shift)
  * @method int getLength()
  * @method int getLengthInBytes()
- * @method bool isPrime(int|bool $t = false)
  * @method BigInteger root(int $n = 2)
  * @method BigInteger pow(BigInteger $n)
  * @method bool between(BigInteger $min, BigInteger $max)
@@ -233,6 +232,22 @@ class BigInteger implements \JsonSerializable
     }
 
     /**
+     * Checks a numer to see if it's prime
+     *
+     * Assuming the $t parameter is not set, this function has an error rate of 2**-80.  The main motivation for the
+     * $t parameter is distributability.  BigInteger::randomPrime() can be distributed across multiple pageloads
+     * on a website instead of just one.
+     *
+     * @param int|bool $t
+     * @return bool
+     */
+    public function isPrime(int|bool $t = false): bool
+    {
+        // phpseclib 4 uses null for "pick the number of rounds automatically" whereas phpseclib 3 used false
+        return $this->value->isPrime($t === false ? null : (int) $t);
+    }
+
+    /**
      * Create Recurring Modulo Function
      *
      * Sometimes it may be desirable to do repeated modulos with the same number outside of
@@ -249,11 +264,9 @@ class BigInteger implements \JsonSerializable
     }
 
     /**
-     * Serialize
+     *  __serialize() magic method
      *
-     * Will be called, automatically, when serialize() is called on a BigInteger object.
-     *
-     * @return array
+     * @see self::__unserialize()
      */
     public function __serialize(): array
     {
@@ -266,14 +279,12 @@ class BigInteger implements \JsonSerializable
     }
 
     /**
-     * Unserialize
-     *
-     * Will be called, automatically, when unserialize() is called on a BigInteger object.
+     *  __unserialize() magic method
      *
      * Also accepts strings produced by phpseclib 3's __sleep(), where hex and precision were private
      * properties (and thus have mangled names).
      *
-     * @param array $data
+     * @see self::__serialize()
      */
     public function __unserialize(array $data): void
     {
