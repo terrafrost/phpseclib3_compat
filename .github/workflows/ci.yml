@@ -25,7 +25,13 @@ jobs:
             mv temp/tests tests
             rm -rf tests/Functional
             rm -rf tests/Unit/Net
-            rm -rf tests/Unit/Math
+            rm tests/Unit/Math/BigInteger/BCMathTest.php
+            rm tests/Unit/Math/BigInteger/GMPTest.php
+            rm tests/Unit/Math/BigInteger/PHP32Test.php
+            rm tests/Unit/Math/BigInteger/PHP64Test.php
+            rm tests/Unit/Math/BigInteger/PHP64OpenSSLTest.php
+            rm -rf tests/Unit/Math/PrimeField
+            rm tests/Unit/Math/BinaryFieldTest.php
             rm -rf tests/Unit/Crypt
             rm tests/Unit/File/ANSITest.php
             rm tests/Unit/File/ASN1Test.php
