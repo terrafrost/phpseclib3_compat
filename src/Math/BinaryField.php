@@ -31,7 +31,7 @@ use phpseclib4\Math\BinaryField\Integer as IntegerNew;
  * @method int getLength()
  * @method static string base2ToBase256(string $x, ?int $size = null)
  * @method static string base256ToBase2(string $x)
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 class BinaryField extends FiniteField
 {

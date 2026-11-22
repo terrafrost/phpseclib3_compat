@@ -38,7 +38,7 @@ use phpseclib4\Math\PrimeField\Integer as IntegerNew;
  * @method static void cleanupCache(int $instanceID)
  * @method static BigInteger getModulo(int $instanceID)
  * @method static void checkInstance(Integer $x, Integer $y)
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 class Integer extends Base
 {

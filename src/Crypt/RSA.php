@@ -3,7 +3,7 @@
 /**
  * Pure-PHP PKCS#1 (v2.1) compliant implementation of RSA.
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * Here's an example of how to encrypt and decrypt text with this library:
  * <code>
@@ -46,7 +46,7 @@
  * format is used by default (unless you change it up to use PKCS1 instead)
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2009 Jim Wigginton
+ * @copyright 2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://phpseclib.sourceforge.net
  */
@@ -61,16 +61,20 @@ use phpseclib3\Exception\{
     BadConfigurationException,
     InconsistentSetupException,
     NoKeyLoadedException,
-    UnsupportedAlgorithmException
+    UnsupportedAlgorithmException,
+    UnsupportedFormatException
 };
 use phpseclib4\Crypt\{Hash as Hash2, RSA as RSA2};
 use phpseclib4\Exception\{
     BadConfigurationException as BadConfigurationExceptionNew,
     BadMethodCallException,
+    InvalidArgumentException,
     InvalidStateException,
+    KeyConstraintException,
     NoKeyLoadedException as NoKeyLoadedExceptionNew,
     UnsupportedAlgorithmException as UnsupportedAlgorithmExceptionNew
 };
+use phpseclib4\Math\BigInteger as NewBigInteger;
 
 /**
  * Pure-PHP PKCS#1 compliant implementation of RSA.
@@ -171,8 +175,16 @@ abstract class RSA extends AsymmetricKey
             $name = 'toArray';
             $args = [];
         }
+        $newPadding = $this->origPadding;
         if ($name === 'withPadding') {
-            $this->origPadding = $args[0];
+            $encryptionMask = self::ENCRYPTION_OAEP | self::ENCRYPTION_PKCS1 | self::ENCRYPTION_NONE;
+            $signatureMask = self::SIGNATURE_PSS | self::SIGNATURE_RELAXED_PKCS1 | self::SIGNATURE_PKCS1;
+            if ($args[0] & $encryptionMask) {
+                $newPadding = ($newPadding & ~$encryptionMask) | ($args[0] & $encryptionMask);
+            }
+            if ($args[0] & $signatureMask) {
+                $newPadding = ($newPadding & ~$signatureMask) | ($args[0] & $signatureMask);
+            }
             if ($args[0] & self::SIGNATURE_PKCS1) {
                 // v4 removed SIGNATURE_RELAXED_PKCS1 (32) and reassigned SIGNATURE_PKCS1 (previously 64) to 32
                 $args[0] = ($args[0] & ~self::SIGNATURE_PKCS1) | RSA2::SIGNATURE_PKCS1;
@@ -188,6 +200,12 @@ abstract class RSA extends AsymmetricKey
             throw new UnsupportedAlgorithmException($e->getMessage());
         } catch (InconsistentSetupException $e) {
             throw new InvalidStateException($e->getMessage());
+        } catch (BadConfigurationExceptionNew $e) {
+            throw new BadConfigurationException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new UnsupportedFormatException($e->getMessage());
+        } catch (KeyConstraintException $e) {
+            throw new \LengthException($e->getMessage());
         }
         // this bit is needed for RSA::withHash(), PublicKey::asPrivateKey(), etc
         if ($result instanceof RSA2) {
@@ -196,12 +214,12 @@ abstract class RSA extends AsymmetricKey
                 RSA2\PublicKey::class => new RSA\PublicKey()
             };
             $temp->key = $result;
-            $temp->origPadding = $this->origPadding;
+            $temp->origPadding = $newPadding;
             return $temp;
         }
         // this bit is needed for PublicKey::getHash(), PrivateKey::getHash(), etc.
         if ($result instanceof Hash2) {
-            return new Hash($result->getHash());
+            return $result->getHash();
         }
         return $result;
     }
@@ -209,6 +227,9 @@ abstract class RSA extends AsymmetricKey
     public static function __callStatic(string $name, array $args): mixed
     {
         if (substr($name, 0, 4) == 'load' && ($args[1] ?? false) === false) {
+            if (is_array($args[0])) {
+                $args[0] = array_map(fn ($x) => new NewBigInteger((string) $x), $args[0]);
+            }
             $args[1] = null;
         }
         try {

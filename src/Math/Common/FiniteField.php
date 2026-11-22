@@ -15,7 +15,7 @@ namespace phpseclib3\Math\Common;
 /**
  * Finite Fields
  *
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 abstract class FiniteField
 {

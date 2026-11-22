@@ -28,7 +28,7 @@ use phpseclib4\Math\PrimeField\Integer as IntegerNew;
  * @method Integer randomInteger()
  * @method int getLengthInBytes()
  * @method int getLength()
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 class PrimeField extends FiniteField
 {

@@ -15,7 +15,7 @@ namespace phpseclib3\Math\Common\FiniteField;
 /**
  * Finite Field Integer
  *
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 abstract class Integer implements \JsonSerializable
 {

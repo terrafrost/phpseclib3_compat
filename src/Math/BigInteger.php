@@ -76,7 +76,7 @@ use phpseclib4\Math\BigInteger\Engines\Engine;
  * @method static BigInteger min(BigInteger ...$nums)
  * @method static BigInteger max(BigInteger ...$nums)
  * @method static int scan1divide(BigInteger $r)
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 class BigInteger implements \JsonSerializable
 {
@@ -92,9 +92,6 @@ class BigInteger implements \JsonSerializable
      *
      * If the second parameter - $base - is negative, then it will be assumed that the number's are encoded using
      * two's compliment.  The sole exception to this is -10, which is treated the same as 10 is.
-     *
-     * @param string|int|BigInteger|BigIntegerNew|Engine $x Base-10 number or base-$base number if $base set.
-     * @param int $base
      */
     public function __construct(string|int|BigInteger|BigIntegerNew|Engine $x = 0, int $base = 10)
     {
@@ -112,8 +109,6 @@ class BigInteger implements \JsonSerializable
      *
      * Use this when handing a value off to phpseclib 4 APIs.  The returned object is not a copy, so calling
      * setPrecision() on it will affect this object as well.
-     *
-     * @return BigIntegerNew
      */
     public function toNew(): BigIntegerNew
     {
@@ -124,9 +119,6 @@ class BigInteger implements \JsonSerializable
      * Converts phpseclib 4 return values to phpseclib 3 return values
      *
      * BigIntegers are wrapped, arrays are walked and everything else is returned as-is
-     *
-     * @param mixed $x
-     * @return mixed
      */
     private static function wrap(mixed $x): mixed
     {
@@ -144,9 +136,6 @@ class BigInteger implements \JsonSerializable
      *
      * Objects are unwrapped without cloning: scan1divide() modifies its argument in place and that change needs
      * to be visible in the phpseclib 3 object that was passed in.
-     *
-     * @param array $args
-     * @return array
      */
     private static function unwrap(array $args): array
     {
@@ -159,14 +148,9 @@ class BigInteger implements \JsonSerializable
      *  __call() magic method
      *
      * Passes calls through to phpseclib4\Math\BigInteger
-     *
-     * @param string $name
-     * @param array $args
-     * @return mixed
      */
     public function __call(string $name, array $args): mixed
     {
-        // static methods can be called on an instance too (eg. $a->min($b, $c)), so this covers both
         return self::wrap($this->value->$name(...self::unwrap($args)));
     }
 
@@ -174,10 +158,6 @@ class BigInteger implements \JsonSerializable
      *  __callStatic() magic method
      *
      * Passes static calls through to phpseclib4\Math\BigInteger
-     *
-     * @param string $name
-     * @param array $args
-     * @return mixed
      */
     public static function __callStatic(string $name, array $args): mixed
     {
@@ -206,9 +186,6 @@ class BigInteger implements \JsonSerializable
      * Calculates modular inverses.
      *
      * Say you have (30 mod 17 * x mod 17) mod 17 == 1.  x can be found using modular inverses.
-     *
-     * @param BigInteger $n
-     * @return BigInteger|false
      */
     public function modInverse(BigInteger $n): BigInteger|false
     {
@@ -220,30 +197,22 @@ class BigInteger implements \JsonSerializable
      * Generate a random prime number between a range
      *
      * If there's not a prime within the given range, false will be returned.
-     *
-     * @param BigInteger $min
-     * @param BigInteger $max
-     * @return false|BigInteger
      */
-    public static function randomRangePrime(BigInteger $min, BigInteger $max): BigInteger|false
+    public static function randomRangePrime(BigInteger $min, BigInteger $max): BigInteger|bool
     {
         $result = BigIntegerNew::randomRangePrime($min->value, $max->value);
         return $result === null ? false : new static($result);
     }
 
     /**
-     * Checks a numer to see if it's prime
+     * Checks a number to see if it's prime
      *
      * Assuming the $t parameter is not set, this function has an error rate of 2**-80.  The main motivation for the
      * $t parameter is distributability.  BigInteger::randomPrime() can be distributed across multiple pageloads
      * on a website instead of just one.
-     *
-     * @param int|bool $t
-     * @return bool
      */
     public function isPrime(int|bool $t = false): bool
     {
-        // phpseclib 4 uses null for "pick the number of rounds automatically" whereas phpseclib 3 used false
         return $this->value->isPrime($t === false ? null : (int) $t);
     }
 
@@ -252,8 +221,6 @@ class BigInteger implements \JsonSerializable
      *
      * Sometimes it may be desirable to do repeated modulos with the same number outside of
      * modular exponentiation
-     *
-     * @return callable
      */
     public function createRecurringModuloFunction(): callable
     {

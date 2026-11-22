@@ -35,7 +35,7 @@ use phpseclib3\Exception\{
     BadConfigurationException,
     NoKeyLoadedException
 };
-use phpseclib4\Crypt\{DSA as DSA2, Hash as Hash2};
+use phpseclib4\Crypt\{DSA as DSANew, Hash as Hash2};
 use phpseclib4\Exception\{
     BadConfigurationException as BadConfigurationExceptionNew,
     BadMethodCallException,
@@ -56,7 +56,7 @@ use phpseclib4\Exception\{
  */
 abstract class DSA extends AsymmetricKey
 {
-    protected DSA2 $key;
+    protected DSANew $key;
 
     public function __call(string $name, array $args): mixed
     {
@@ -64,12 +64,17 @@ abstract class DSA extends AsymmetricKey
             $name = 'toArray';
             $args = [];
         }
-        $result = $this->key->$name(...$args);
-        // this bit is needed for DSA::withHash(), tc
-        if ($result instanceof DSA2) {
+        try {
+            $result = $this->key->$name(...$args);
+        } catch (BadConfigurationExceptionNew $e) {
+            throw new BadConfigurationException($e->getMessage());
+        }
+        // this bit is needed for DSA::withHash(), DSA::getParameters(), etc
+        if ($result instanceof DSANew) {
             $temp = match ($result::class) {
-                DSA2\PrivateKey::class => new PrivateKey(),
-                DSA2\PublicKey::class => new PublicKey()
+                DSANew\Parameters::class => new Parameters(),
+                DSANew\PrivateKey::class => new PrivateKey(),
+                DSANew\PublicKey::class => new PublicKey()
             };
             $temp->key = $result;
             return $temp;
@@ -92,7 +97,7 @@ abstract class DSA extends AsymmetricKey
             }
         }
         try {
-            $result = DSA2::$name(...$args);
+            $result = DSANew::$name(...$args);
         } catch (NoKeyLoadedExceptionNew $e) {
             throw new NoKeyLoadedException($e->getMessage());
         } catch (BadMethodCallException $e) {
@@ -103,10 +108,11 @@ abstract class DSA extends AsymmetricKey
             throw new BadConfigurationException($e->getMessage());
         }
         // this bit is needed for DSA::createKey(), DSA::loadFormat(), etc.
-        if ($result instanceof DSA2) {
+        if ($result instanceof DSANew) {
             $temp = match ($result::class) {
-                DSA2\PrivateKey::class => new DSA\PrivateKey(),
-                DSA2\PublicKey::class => new DSA\PublicKey()
+                DSANew\Parameters::class => new DSA\Parameters(),
+                DSANew\PrivateKey::class => new DSA\PrivateKey(),
+                DSANew\PublicKey::class => new DSA\PublicKey()
             };
             $temp->key = $result;
             return $temp;

@@ -154,4 +154,20 @@ abstract class ASN1
     {
         NewASN1::loadOIDs($oids);
     }
+
+    public static function convertPrimitives(mixed &$arr): void
+    {
+        if (is_array($arr)) {
+            array_walk_recursive($arr, function (&$v) {
+                if ($v instanceof \phpseclib4\Math\BigInteger) {
+                    $v = new \phpseclib3\Math\BigInteger("$v");
+                    return;
+                }
+                if (!$v instanceof \Stringable) {
+                    return;
+                }
+                $v = "$v";
+            });
+        }
+    }
 }

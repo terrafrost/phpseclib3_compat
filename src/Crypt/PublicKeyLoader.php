@@ -51,7 +51,7 @@ abstract class PublicKeyLoader
             if ($key) {
                 return $key;
             }
-        } catch (\Exception) {
+        } catch (\Throwable) {
         }
 
         throw new NoKeyLoadedException('Unable to read key');

@@ -44,6 +44,8 @@ use phpseclib4\Exception\{
     BadMethodCallException,
     LengthException,
     NoKeyLoadedException as NoKeyLoadedExceptionNew,
+    ResourceLimitException,
+    UnexpectedValueException,
     UnsupportedCurveException as UnsupportedCurveExceptionNew
 };
 
@@ -114,6 +116,10 @@ abstract class EC extends AsymmetricKey
             throw new UnsupportedCurveException($e->getMessage());
         } catch (BadConfigurationExceptionNew $e) {
             throw new BadConfigurationException($e->getMessage());
+        } catch (UnexpectedValueException $e) {
+            throw new \RangeException($e->getMessage());
+        } catch (ResourceLimitException $e) {
+            throw new \OutOfBoundsException($e->getMessage());
         }
         // this bit is needed for EC::createKey(), EC::loadFormat(), etc.
         if ($result instanceof EC2) {

@@ -43,7 +43,7 @@ use phpseclib4\Math\BinaryField\Integer as IntegerNew;
  * @method static void setModulo(int $instanceID, string $modulo)
  * @method static void setRecurringModuloFunction(int $instanceID, callable $function)
  * @method static string getModulo(int $instanceID)
- * @author  Jim Wigginton <terrafrost@php.net>
+ * @author Jim Wigginton <terrafrost@php.net>
  */
 class Integer extends Base
 {
