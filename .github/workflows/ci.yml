@@ -34,14 +34,12 @@ jobs:
             rm -rf tests/Unit/Crypt/AES/
             rm tests/Unit/Crypt/BlowfishTest.php
             rm tests/Unit/Crypt/ChaCha20Test.php
-            rm tests/Unit/Crypt/DESTest.php
             rm tests/Unit/Crypt/DHTest.php
             rm tests/Unit/Crypt/GCMTest.php
             rm tests/Unit/Crypt/HashTest.php
             rm tests/Unit/Crypt/RC2Test.php
             rm tests/Unit/Crypt/RC4Test.php
             rm tests/Unit/Crypt/Salsa20Test.php
-            rm tests/Unit/Crypt/TripleDESTest.php
             rm tests/Unit/Crypt/EC/CurveTest.php
             rm tests/Unit/File/ANSITest.php
             rm tests/Unit/File/ASN1Test.php

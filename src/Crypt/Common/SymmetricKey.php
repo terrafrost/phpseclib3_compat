@@ -22,4 +22,20 @@ namespace phpseclib3\Crypt\Common;
  */
 abstract class SymmetricKey
 {
+    public const MODE_CTR = -1;
+    public const MODE_ECB = 1;
+    public const MODE_CBC = 2;
+    public const MODE_CFB = 3;
+    public const MODE_CFB8 = 7;
+    public const MODE_OFB8 = 8;
+    public const MODE_OFB = 4;
+    public const MODE_GCM = 5;
+    public const MODE_STREAM = 6;
+
+    public const ENGINE_INTERNAL = 1;
+    public const ENGINE_EVAL = 2;
+    public const ENGINE_MCRYPT = 3;
+    public const ENGINE_OPENSSL = 4;
+    public const ENGINE_LIBSODIUM = 5;
+    public const ENGINE_OPENSSL_GCM = 6;
 }
