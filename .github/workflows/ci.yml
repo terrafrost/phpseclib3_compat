@@ -42,7 +42,6 @@ jobs:
             rm tests/Unit/Crypt/RC4Test.php
             rm tests/Unit/Crypt/Salsa20Test.php
             rm tests/Unit/Crypt/TripleDESTest.php
-            rm tests/Unit/Crypt/TwofishTest.php
             rm tests/Unit/Crypt/EC/CurveTest.php
             rm tests/Unit/File/ANSITest.php
             rm tests/Unit/File/ASN1Test.php
