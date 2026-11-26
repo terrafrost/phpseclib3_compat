@@ -31,7 +31,6 @@ jobs:
             rm tests/Unit/Math/BigInteger/PHP64Test.php
             rm tests/Unit/Math/BigInteger/PHP64OpenSSLTest.php
             rm -rf tests/Unit/Math/PrimeField
-            rm -rf tests/Unit/Crypt/AES/
             rm tests/Unit/Crypt/BlowfishTest.php
             rm tests/Unit/Crypt/DHTest.php
             rm tests/Unit/Crypt/GCMTest.php
